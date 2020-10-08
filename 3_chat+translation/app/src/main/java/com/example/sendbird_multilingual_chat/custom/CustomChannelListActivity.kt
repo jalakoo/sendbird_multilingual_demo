@@ -3,6 +3,8 @@ package com.example.sendbird_multilingual_chat.custom
 import com.sendbird.uikit.activities.ChannelActivity
 import com.sendbird.uikit.activities.ChannelListActivity
 import com.sendbird.uikit.fragments.ChannelListFragment
+import com.sendbird.android.SendBird
+
 
 public class CustomChannelListActivity : ChannelListActivity() {
     var customChannelListActivity: CustomChannelListActivity? = null
@@ -12,10 +14,16 @@ public class CustomChannelListActivity : ChannelListActivity() {
         return ChannelListFragment.Builder()
             .setUseHeader(true)
             .setItemClickListener { view, i, groupChannel ->
-                val intent = ChannelActivity.newIntentFromCustomActivity(this,CustomChannelActivity::class.java, groupChannel.url )
+//                SendBird.addChannelHandler(groupChannel.name, )
+                val intent = ChannelActivity.newIntentFromCustomActivity(
+                    this,
+                    CustomChannelActivity::class.java,
+                    groupChannel.url
+                )
                 startActivity(intent)
             }
             .build()
     }
+
 
 }
