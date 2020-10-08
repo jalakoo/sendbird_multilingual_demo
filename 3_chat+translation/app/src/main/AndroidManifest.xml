@@ -20,6 +20,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".custom.CustomChannelListActivity"></activity>
+        <activity android:name=".custom.CustomChannelActivity"></activity>
     </application>
 
 </manifest>

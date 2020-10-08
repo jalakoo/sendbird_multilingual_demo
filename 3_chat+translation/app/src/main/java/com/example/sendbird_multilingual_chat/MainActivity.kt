@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity() {
                     return@connect
                 }
                 WaitingDialog.dismiss()
-                // 3. Kick off Group Channels list UI
+                // 3. Kick off Group Channels list UI with customized Channels List
                 startActivity(Intent(this, CustomChannelListActivity::class.java))
                 finish()
 
