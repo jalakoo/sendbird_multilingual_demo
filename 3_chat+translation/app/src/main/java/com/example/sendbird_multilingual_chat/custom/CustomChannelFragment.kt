@@ -8,25 +8,33 @@ import java.util.*
 class CustomChannelFragment : ChannelFragment() {
 
     override fun onBeforeSendUserMessage(params: UserMessageParams) {
+        super.onBeforeSendUserMessage(params)
         val languages: MutableList<String> = ArrayList()
         languages.add("en")
-        languages.add("ja") // Japanese
-        languages.add("ko") // Korean
         languages.add("it") // Italian
         languages.add("fr") // French
         languages.add("de") // German
-        super.onBeforeSendUserMessage(params)
         params
             .setTranslationTargetLanguages(languages)
     }
 
     override fun onBeforeUpdateUserMessage(params: UserMessageParams) {
+        super.onBeforeUpdateUserMessage(params)
         val languageCode = Locale.getDefault().language
-        Log.i("CustomChannelFragment", languageCode)
+        Log.i("CustomChannelFragment-b", languageCode)
         val languages: MutableList<String> = ArrayList()
         languages.add(languageCode)
+        params
+            .setTranslationTargetLanguages(languages)
 
-        super.onBeforeUpdateUserMessage(params)
+    }
+
+    override fun updateUserMessage(messageId: Long, params: UserMessageParams) {
+        super.updateUserMessage(messageId, params)
+        val languageCode = Locale.getDefault().language
+        Log.i("CustomChannelFragment-u", languageCode)
+        val languages: MutableList<String> = ArrayList()
+        languages.add(languageCode)
         params
             .setTranslationTargetLanguages(languages)
     }
