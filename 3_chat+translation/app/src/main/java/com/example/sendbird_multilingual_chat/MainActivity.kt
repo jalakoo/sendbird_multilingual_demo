@@ -16,13 +16,13 @@ import com.sendbird.uikit.log.Logger
 import com.sendbird.uikit.widgets.WaitingDialog
 
 // In place of an actual login / auth process for simplicity
-const val USER_ID = "batman"
-const val USER_NICKNAME = "Batman"
-const val USER_PROFILE = "https://cdn.inprnt.com/thumbs/b9/9a/b99ae31d32be7d46b45bd659b6fb587b.jpg"
+//const val USER_ID = "batman"
+//const val USER_NICKNAME = "Batman"
+//const val USER_PROFILE = "https://cdn.inprnt.com/thumbs/b9/9a/b99ae31d32be7d46b45bd659b6fb587b.jpg"
 
-//const val USER_ID = "ultron"
-//const val USER_NICKNAME = "Ultron"
-//const val USER_PROFILE = "https://newcastlebeach.org/images/ultron-profile-15.jpg"
+const val USER_ID = "ultron"
+const val USER_NICKNAME = "Ultron"
+const val USER_PROFILE = "https://newcastlebeach.org/images/ultron-profile-15.jpg"
 
 class MainActivity : AppCompatActivity() {
 
@@ -73,8 +73,6 @@ class MainActivity : AppCompatActivity() {
                 // 3. Kick off Group Channels list UI with customized Channels List
                 startActivity(Intent(this, CustomChannelListActivity::class.java))
                 finish()
-
-
             }
         }
     }

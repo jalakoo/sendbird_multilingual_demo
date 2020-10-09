@@ -10,6 +10,7 @@ class CustomChannelFragment : ChannelFragment() {
     override fun onBeforeSendUserMessage(params: UserMessageParams) {
         super.onBeforeSendUserMessage(params)
         val languages: MutableList<String> = ArrayList()
+        // An alternate way to do translations is to translate at time of send
         languages.add("en")
         languages.add("it") // Italian
         languages.add("fr") // French

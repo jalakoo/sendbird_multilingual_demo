@@ -10,6 +10,7 @@ import com.sendbird.android.UserMessage
 import com.sendbird.uikit.activities.ChannelActivity
 import com.sendbird.uikit.fragments.ChannelFragment
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CustomChannelActivity : ChannelActivity() {
@@ -17,11 +18,18 @@ class CustomChannelActivity : ChannelActivity() {
     // Using default ChannelFragment
     override fun createChannelFragment(channelUrl: String): ChannelFragment {
         return ChannelFragment.Builder(channelUrl)
-            .setItemLongClickListener { view, i, baseMessage -> showTranslations(view, i, baseMessage, channelUrl) }
+            .setItemLongClickListener { view, i, baseMessage ->
+                showTranslations(
+                    view,
+                    i,
+                    baseMessage,
+                    channelUrl
+                )
+            }
             .build()
     }
 
-    // Using a custom ChannelFragment
+    // Using a custom ChannelFragment to customize chat displays
 //    private var customChannelFragment: CustomChannelFragment? = null
 //    override fun createChannelFragment(channelUrl: String): ChannelFragment {
 //        customChannelFragment = CustomChannelFragment()
@@ -37,45 +45,40 @@ class CustomChannelActivity : ChannelActivity() {
         val userLanguage = Locale.getDefault().language
         var userPreferredMessage = ""
 
-        if (message is UserMessage) {
-            userMessage = message
-            val translations = arrayOfNulls<String>(userMessage.translations.size)
+        // Only show translations for UserMessages
+        if (message !is UserMessage) {
+            Log.e("CustomChannelActivity", "Oop, message was not of type UserMessage")
+            return
+        }
 
-            // Pulling list of pre-translated messages from sender
-            var c = 0
-            for (translation in userMessage.translations.keys) {
-                val translatedMessage = userMessage.translations[translation]
-                translations[c] = translatedMessage
-                translatedMessage?.let {
-                    if (translation == userLanguage){
-                        userPreferredMessage = translatedMessage
-                    }
-                }
-                c++
-            }
-
-            // Get preferred language translation on the fly if not included in the original message translation options
-            if (userPreferredMessage == "") {
-                val languages: MutableList<String> = ArrayList()
-                languages.add(userLanguage)
-                val nestedHandler =
-                    BaseChannel.TranslateUserMessageHandler { message, sendBirdException ->
-                        run {
-                            val translatedMessages: Array<String> =
-                                message.translations.values.toTypedArray()
-                            showDialog("Translations", translatedMessages)
-                        }
-                    }
-                val handler = GroupChannel.GroupChannelGetHandler { channel, sendBirdException ->
-                    Log.i("CustomChannelActivity", "GroupChannelGetHandler")
-                    channel.translateUserMessage(userMessage, languages, nestedHandler)
-                }
-                GroupChannel.getChannel(channelUrl, handler)
+        userMessage = message
+        // Convert the translations map property to a list for display
+        val translations = ArrayList<String>()
+        userMessage.translations.forEach{(key, value) ->
+            translations.add(value)
+            if (key == userLanguage){
+                // Also note if we have a translation for users preferred language
+                userPreferredMessage = value
             }
         }
+
+        // Get preferred language on demand if not included above
+        if (userPreferredMessage == "") {
+            val targetLanguages: MutableList<String> = arrayListOf(userLanguage)
+            GroupChannel.getChannel(channelUrl, GroupChannel.GroupChannelGetHandler{ channel, sendbirdException ->
+                channel.translateUserMessage(userMessage, targetLanguages, BaseChannel.TranslateUserMessageHandler{ message, sendbirdException ->
+                    val translatedMessages: Array<String> =
+                        message.translations.values.toTypedArray()
+                    showDialog("Translations", translatedMessages)
+                })
+            })
+        } else {
+            showDialog("Translations", translations.toTypedArray())
+        }
+
     }
 
-    private fun showDialog(title: String, translations: Array<String>){
+    private fun showDialog(title: String, translations: Array<String>) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this)
         builder.setTitle(title)
             .setItems(translations, null)
